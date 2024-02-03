@@ -81,7 +81,15 @@ const App: React.FC = () => {
       )
     );
     setEditingTaskId(null);
-    setEditedTaskText(''); // Reset editedTaskText after updating task
+    setEditedTaskText(""); // Reset editedTaskText after updating task
+  };
+
+  const handleTextFieldKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
+      updateTask(editingTaskId!);
+    }
   };
 
   return (
@@ -161,7 +169,28 @@ const App: React.FC = () => {
             (todo) =>
               // Check if the task is completed and show/hide based on the checkbox state
               (showCompleted || !todo.completed) && (
-                <ListItem key={todo.id} dense button>
+                <ListItem
+                  key={todo.id}
+                  dense
+                  disableGutters
+                  style={{
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
+                    marginBottom: "8px",
+                    background: theme.palette.background.paper,
+                    boxShadow:
+                      theme.palette.mode === "dark"
+                        ? "0 4px 8px rgba(255, 255, 255, 0.15)"
+                        : "0 2px 5px rgba(0, 0, 0, 0.1)",
+                    transition: "height 0.3s ease-in-out", // Add transition for smooth height change
+                    position: "relative",
+                    overflow: "hidden",
+                    display: "flex",
+                    alignItems: "center", // Center items vertically
+                    flexWrap: "wrap",
+                    minHeight: '48px',
+                  }}
+                >
                   <Checkbox
                     checked={todo.completed}
                     onChange={() => toggleTodo(todo.id)}
@@ -172,6 +201,8 @@ const App: React.FC = () => {
                       <TextField
                         value={editedTaskText}
                         onChange={(e) => setEditedTaskText(e.target.value)}
+                        onKeyDown={handleTextFieldKeyDown}
+                        style={{ flex: 1 }}
                       />
                       <IconButton
                         onClick={() => updateTask(todo.id)}
@@ -190,12 +221,17 @@ const App: React.FC = () => {
                           : "none",
                         color: theme.palette.text.primary,
                         cursor: "pointer",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "pre-line",
+                        flex: 1,
                       }}
                     />
                   )}
                   <IconButton
                     onClick={() => deleteTodo(todo.id)}
                     color="secondary"
+                    style={{ height: "100%" }}
                   >
                     <DeleteIcon />
                   </IconButton>
